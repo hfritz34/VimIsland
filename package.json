@@ -1,0 +1,20 @@
+{
+  "name": "vimisland",
+  "version": "1.0.0",
+  "description": "Vim-based infinite runner game",
+  "private": true,
+  "workspaces": ["web", "api"],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "cd web && npm run dev",
+    "dev:api": "cd api && npm run dev",
+    "build": "cd web && npm run build",
+    "start": "cd api && npm start",
+    "lint": "npm run lint:web && npm run lint:api",
+    "lint:web": "cd web && npm run lint",
+    "lint:api": "cd api && npm run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
