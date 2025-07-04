@@ -11,6 +11,7 @@ export class Game {
     this.stateManager = new StateManager();
     this.letterGrid = null;
     this.player = null;
+    this.playerContainer = null;
     
     this.setup();
   }
@@ -38,12 +39,16 @@ export class Game {
     this.gameContainer.addChild(this.letterGrid.getContainer());
     
     // Create and add player cursor
-    this.player = new Player(5, 5, 60);
-    this.player.getContainer().x = gridOffsetX;
-    this.player.getContainer().y = gridOffsetY;
+    this.player = new Player(0, 0, 60);
     this.player.updatePosition();
     
-    this.gameContainer.addChild(this.player.getContainer());
+    // Add player to a container that's offset with the grid
+    this.playerContainer = new PIXI.Container();
+    this.playerContainer.x = gridOffsetX;
+    this.playerContainer.y = gridOffsetY;
+    this.playerContainer.addChild(this.player.getContainer());
+    
+    this.gameContainer.addChild(this.playerContainer);
   }
 
   start() {

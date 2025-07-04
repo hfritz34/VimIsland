@@ -11,25 +11,28 @@ export class Player {
   }
 
   createCursor() {
-    // Create a simple rectangular cursor
+    // Create a vertical cursor like in vim (thin vertical line)
     const cursor = new PIXI.Graphics();
-    cursor.lineStyle(3, 0xFF0000, 1);
-    cursor.drawRect(0, 0, this.cellSize - 10, this.cellSize - 10);
+    cursor.beginFill(0xFF0000);
+    cursor.drawRect(0, 0, 3, this.cellSize - 10);
+    cursor.endFill();
     
-    // Create blinking underscore effect
-    const underscore = new PIXI.Graphics();
-    underscore.beginFill(0xFF0000);
-    underscore.drawRect(5, this.cellSize - 15, this.cellSize - 20, 5);
-    underscore.endFill();
+    // Create highlight box for better visibility
+    const highlight = new PIXI.Graphics();
+    highlight.lineStyle(2, 0xFF0000, 0.3);
+    highlight.beginFill(0xFF0000, 0.1);
+    highlight.drawRect(-this.cellSize/2 + 5, -this.cellSize/2 + 5, this.cellSize - 10, this.cellSize - 10);
+    highlight.endFill();
     
     this.cursor = cursor;
-    this.underscore = underscore;
+    this.highlight = highlight;
     
+    this.container.addChild(highlight);
     this.container.addChild(cursor);
-    this.container.addChild(underscore);
     
-    // Center cursor in cell
-    this.container.pivot.set((this.cellSize - 10) / 2, (this.cellSize - 10) / 2);
+    // Position cursor to the left side of the character
+    cursor.x = -this.cellSize/2 + 5;
+    cursor.y = -this.cellSize/2 + 5;
     
     // Start blinking animation
     this.startBlinking();
@@ -39,7 +42,7 @@ export class Player {
     let blinkCounter = 0;
     setInterval(() => {
       blinkCounter++;
-      this.underscore.visible = blinkCounter % 2 === 0;
+      this.cursor.visible = blinkCounter % 2 === 0;
     }, 500);
   }
 
