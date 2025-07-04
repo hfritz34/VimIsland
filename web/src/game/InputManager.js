@@ -1,6 +1,7 @@
 export class InputManager {
   constructor() {
     this.keys = {};
+    this.commandCallback = null;
     this.setupEventListeners();
   }
 
@@ -16,22 +17,15 @@ export class InputManager {
   }
 
   handleVimCommand(key) {
-    switch(key) {
-      case 'h':
-        console.log('Move left');
-        break;
-      case 'j':
-        console.log('Move down');
-        break;
-      case 'k':
-        console.log('Move up');
-        break;
-      case 'l':
-        console.log('Move right');
-        break;
-      default:
-        console.log(`Key pressed: ${key}`);
+    const vimCommands = ['h', 'j', 'k', 'l'];
+    
+    if (vimCommands.includes(key) && this.commandCallback) {
+      this.commandCallback(key);
     }
+  }
+  
+  setCommandCallback(callback) {
+    this.commandCallback = callback;
   }
 
   isKeyPressed(key) {
