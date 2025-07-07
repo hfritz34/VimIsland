@@ -9,7 +9,7 @@ async function initGame() {
   await app.init({
     width: 1024,
     height: 768,
-    backgroundColor: 0x87CEEB, // Sky blue
+    backgroundColor: 0x006994, // Ocean blue
     antialias: true,
   });
 

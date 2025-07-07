@@ -13,16 +13,14 @@ export class Player {
   createCursor() {
     // Create a vertical cursor like in vim (thin vertical line)
     const cursor = new PIXI.Graphics();
-    cursor.beginFill(0xFF0000);
-    cursor.drawRect(0, 0, 3, this.cellSize - 10);
-    cursor.endFill();
+    cursor.rect(0, 0, 3, this.cellSize - 10);
+    cursor.fill(0xFF0000);
     
     // Create highlight box for better visibility
     const highlight = new PIXI.Graphics();
-    highlight.lineStyle(2, 0xFF0000, 0.3);
-    highlight.beginFill(0xFF0000, 0.1);
-    highlight.drawRect(-this.cellSize/2 + 5, -this.cellSize/2 + 5, this.cellSize - 10, this.cellSize - 10);
-    highlight.endFill();
+    highlight.rect(-this.cellSize/2 + 5, -this.cellSize/2 + 5, this.cellSize - 10, this.cellSize - 10);
+    highlight.fill({ color: 0xFF0000, alpha: 0.1 });
+    highlight.stroke({ color: 0xFF0000, width: 2, alpha: 0.3 });
     
     this.cursor = cursor;
     this.highlight = highlight;

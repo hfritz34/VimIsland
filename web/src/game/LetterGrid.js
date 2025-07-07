@@ -24,7 +24,12 @@ export class LetterGrid {
       this.letters[row] = [];
       for (let col = 0; col < this.cols; col++) {
         const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-        const letterText = new PIXI.Text(randomLetter, textStyle);
+        
+        // Use new PixiJS v8 Text constructor
+        const letterText = new PIXI.Text({
+          text: randomLetter,
+          style: textStyle
+        });
         
         letterText.x = col * this.cellSize + this.cellSize / 2;
         letterText.y = row * this.cellSize + this.cellSize / 2;
