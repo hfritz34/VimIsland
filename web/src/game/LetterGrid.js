@@ -62,4 +62,42 @@ export class LetterGrid {
       height: this.rows * this.cellSize
     };
   }
+
+  // Check if a letter is a vowel
+  isVowel(letter) {
+    return 'AEIOU'.includes(letter);
+  }
+
+  // Find the next word start position from current position
+  findNextWordStart(currentRow, currentCol) {
+    // First, if we're in a word, skip to the end of current word
+    let col = currentCol;
+    let row = currentRow;
+    
+    // Skip current word if we're in one
+    if (col < this.cols && this.letters[row][col]) {
+      const currentIsVowel = this.isVowel(this.letters[row][col].letter);
+      while (col < this.cols && this.letters[row][col] && 
+             this.isVowel(this.letters[row][col].letter) === currentIsVowel) {
+        col++;
+      }
+    }
+    
+    // Now find the start of the next word
+    while (row < this.rows) {
+      while (col < this.cols) {
+        if (this.letters[row][col]) {
+          // Found a letter, this is the start of next word
+          return { row, col };
+        }
+        col++;
+      }
+      // Move to next row
+      row++;
+      col = 0;
+    }
+    
+    // No more words found
+    return null;
+  }
 }

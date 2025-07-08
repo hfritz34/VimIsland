@@ -84,4 +84,16 @@ export class Player {
   getPosition() {
     return { row: this.gridRow, col: this.gridCol };
   }
+
+  // Move to next word start position
+  moveToNextWord(letterGrid) {
+    const nextPos = letterGrid.findNextWordStart(this.gridRow, this.gridCol);
+    if (nextPos) {
+      this.gridRow = nextPos.row;
+      this.gridCol = nextPos.col;
+      this.updatePosition();
+      return true;
+    }
+    return false;
+  }
 }

@@ -94,6 +94,9 @@ export class Game {
       case 'l':
         this.player.moveRight(this.letterGrid.cols);
         break;
+      case 'w':
+        this.player.moveToNextWord(this.letterGrid);
+        break;
     }
   }
   
