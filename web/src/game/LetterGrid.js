@@ -12,7 +12,17 @@ export class LetterGrid {
   }
 
   generateGrid() {
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    // Common 3-5 letter words for the game
+    const words = [
+      'THE', 'AND', 'FOR', 'ARE', 'BUT', 'NOT', 'YOU', 'ALL', 'CAN', 'HAD',
+      'HER', 'WAS', 'ONE', 'OUR', 'OUT', 'DAY', 'GET', 'HAS', 'HIM', 'HIS',
+      'HOW', 'ITS', 'MAY', 'NEW', 'NOW', 'OLD', 'SEE', 'TWO', 'WAY', 'WHO',
+      'BOY', 'DID', 'ITS', 'LET', 'PUT', 'SAY', 'SHE', 'TOO', 'USE', 'HER',
+      'MAKE', 'GOOD', 'LOOK', 'HELP', 'PLAY', 'SMALL', 'GREAT', 'AGAIN', 'TELL', 'WORK',
+      'CALL', 'HAND', 'HIGH', 'KEEP', 'LAST', 'LONG', 'MAKE', 'MANY', 'OVER', 'SUCH',
+      'BACK', 'CALL', 'CAME', 'COME', 'EACH', 'FEEL', 'FIND', 'GIVE', 'GOOD', 'KNOW'
+    ];
+    
     const textStyle = new PIXI.TextStyle({
       fontFamily: 'monospace',
       fontSize: 24,
@@ -20,27 +30,54 @@ export class LetterGrid {
       align: 'center'
     });
 
+    // Initialize empty grid
     for (let row = 0; row < this.rows; row++) {
       this.letters[row] = [];
       for (let col = 0; col < this.cols; col++) {
-        const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-        
-        // Use new PixiJS v8 Text constructor
-        const letterText = new PIXI.Text({
-          text: randomLetter,
-          style: textStyle
-        });
-        
-        letterText.x = col * this.cellSize + this.cellSize / 2;
-        letterText.y = row * this.cellSize + this.cellSize / 2;
-        letterText.anchor.set(0.5);
-        
-        this.letters[row][col] = {
-          letter: randomLetter,
-          text: letterText
-        };
-        
-        this.container.addChild(letterText);
+        this.letters[row][col] = null;
+      }
+    }
+
+    // Place words randomly on the grid
+    for (let row = 0; row < this.rows; row++) {
+      let col = 0;
+      while (col < this.cols) {
+        // Random chance to place a word or leave space
+        if (Math.random() < 0.7 && col < this.cols - 2) { // 70% chance to place word
+          const word = words[Math.floor(Math.random() * words.length)];
+          
+          // Check if word fits in remaining space
+          if (col + word.length <= this.cols) {
+            // Place the word
+            for (let i = 0; i < word.length; i++) {
+              const letterText = new PIXI.Text({
+                text: word[i],
+                style: textStyle
+              });
+              
+              letterText.x = (col + i) * this.cellSize + this.cellSize / 2;
+              letterText.y = row * this.cellSize + this.cellSize / 2;
+              letterText.anchor.set(0.5);
+              
+              this.letters[row][col + i] = {
+                letter: word[i],
+                text: letterText
+              };
+              
+              this.container.addChild(letterText);
+            }
+            col += word.length;
+            
+            // Add space after word (random 1-2 spaces)
+            col += Math.floor(Math.random() * 2) + 1;
+          } else {
+            // Not enough space for word, skip to next row
+            break;
+          }
+        } else {
+          // Leave empty space
+          col++;
+        }
       }
     }
   }
@@ -70,28 +107,28 @@ export class LetterGrid {
 
   // Find the next word start position from current position
   findNextWordStart(currentRow, currentCol) {
-    // First, if we're in a word, skip to the end of current word
     let col = currentCol;
     let row = currentRow;
     
     // Skip current word if we're in one
     if (col < this.cols && this.letters[row][col]) {
-      const currentIsVowel = this.isVowel(this.letters[row][col].letter);
-      while (col < this.cols && this.letters[row][col] && 
-             this.isVowel(this.letters[row][col].letter) === currentIsVowel) {
+      // Move to end of current word
+      while (col < this.cols && this.letters[row][col]) {
         col++;
       }
     }
     
-    // Now find the start of the next word
+    // Skip spaces to find next word
     while (row < this.rows) {
-      while (col < this.cols) {
-        if (this.letters[row][col]) {
-          // Found a letter, this is the start of next word
-          return { row, col };
-        }
+      while (col < this.cols && !this.letters[row][col]) {
         col++;
       }
+      
+      // If we found a letter, this is the start of next word
+      if (col < this.cols && this.letters[row][col]) {
+        return { row, col };
+      }
+      
       // Move to next row
       row++;
       col = 0;
