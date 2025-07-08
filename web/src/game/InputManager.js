@@ -30,7 +30,7 @@ export class InputManager {
       return;
     }
     
-    const vimCommands = ['h', 'j', 'k', 'l', 'w', 'b', 'e', 'f', ';'];
+    const vimCommands = ['h', 'j', 'k', 'l', 'w', 'b', 'e', 'f', ';', 'o', 'O', '0', '$', 'x'];
     
     if (vimCommands.includes(key)) {
       if (key === 'f') {

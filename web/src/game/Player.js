@@ -7,6 +7,13 @@ export class Player {
     this.cellSize = cellSize;
     this.container = new PIXI.Container();
     
+    // Jump ability properties
+    this.jumpCooldown = 0;
+    this.jumpCooldownMax = 180; // 3 seconds at 60 FPS
+    this.isJumping = false;
+    this.jumpDuration = 30; // 0.5 seconds at 60 FPS
+    this.jumpTimer = 0;
+    
     this.createCursor();
   }
 
@@ -131,5 +138,84 @@ export class Player {
       return true;
     }
     return false;
+  }
+
+  // Update player state (cooldowns, jumping animation)
+  update(delta) {
+    // Update jump cooldown
+    if (this.jumpCooldown > 0) {
+      this.jumpCooldown -= delta;
+      if (this.jumpCooldown < 0) this.jumpCooldown = 0;
+    }
+
+    // Update jumping state
+    if (this.isJumping) {
+      this.jumpTimer -= delta;
+      if (this.jumpTimer <= 0) {
+        this.isJumping = false;
+        this.jumpTimer = 0;
+        // Reset visual state
+        this.container.y = this.gridRow * this.cellSize + this.cellSize / 2;
+      } else {
+        // Create jump animation (slight upward movement)
+        const jumpProgress = 1 - (this.jumpTimer / this.jumpDuration);
+        const jumpHeight = Math.sin(jumpProgress * Math.PI) * -20; // Peak at middle of jump
+        this.container.y = this.gridRow * this.cellSize + this.cellSize / 2 + jumpHeight;
+      }
+    }
+  }
+
+  // Jump over waves (o = jump up, O = jump down)
+  jumpOverWaves(direction = 'up') {
+    if (this.jumpCooldown > 0 || this.isJumping) {
+      return false; // Can't jump while on cooldown or already jumping
+    }
+
+    // Start jump
+    this.isJumping = true;
+    this.jumpTimer = this.jumpDuration;
+    this.jumpCooldown = this.jumpCooldownMax;
+
+    // Optional: Move one row in the direction
+    if (direction === 'up' && this.gridRow > 0) {
+      this.gridRow--;
+    } else if (direction === 'down' && this.gridRow < 9) { // Assuming 10 rows (0-9)
+      this.gridRow++;
+    }
+    
+    this.updatePosition();
+    return true;
+  }
+
+  // Check if jump is available
+  canJump() {
+    return this.jumpCooldown <= 0 && !this.isJumping;
+  }
+
+  // Get jump cooldown percentage (for UI)
+  getJumpCooldownPercent() {
+    return this.jumpCooldown / this.jumpCooldownMax;
+  }
+
+  // Check if player is currently jumping (immune to waves)
+  isImmuneToWaves() {
+    return this.isJumping;
+  }
+
+  // Move to start of line (column 0)
+  moveToLineStart() {
+    this.gridCol = 0;
+    this.updatePosition();
+  }
+
+  // Move to end of line (last column)
+  moveToLineEnd(maxCols) {
+    this.gridCol = maxCols - 1;
+    this.updatePosition();
+  }
+
+  // Delete character at current position
+  deleteCurrentCharacter(letterGrid) {
+    return letterGrid.deleteCharacter(this.gridRow, this.gridCol);
   }
 }

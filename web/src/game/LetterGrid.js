@@ -240,4 +240,18 @@ export class LetterGrid {
     // Character not found in row
     return null;
   }
+
+  // Delete character at position
+  deleteCharacter(row, col) {
+    if (row >= 0 && row < this.rows && col >= 0 && col < this.cols && this.letters[row][col]) {
+      // Remove the text from display
+      this.container.removeChild(this.letters[row][col].text);
+      
+      // Clear the letter data
+      this.letters[row][col] = null;
+      
+      return true; // Successfully deleted
+    }
+    return false; // Nothing to delete
+  }
 }

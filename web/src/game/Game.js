@@ -110,6 +110,21 @@ export class Game {
       case 'e':
         this.player.moveToWordEnd(this.letterGrid);
         break;
+      case 'o':
+        this.player.jumpOverWaves('down');
+        break;
+      case 'O':
+        this.player.jumpOverWaves('up');
+        break;
+      case '0':
+        this.player.moveToLineStart();
+        break;
+      case '$':
+        this.player.moveToLineEnd(this.letterGrid.cols);
+        break;
+      case 'x':
+        this.player.deleteCurrentCharacter(this.letterGrid);
+        break;
     }
   }
   
@@ -163,6 +178,9 @@ export class Game {
   update(delta) {
     if (this.isGameOver) return;
     
+    // Update player (cooldowns, jumping animation)
+    this.player.update(delta);
+    
     // Update score (survival time)
     this.score += delta;
     
@@ -180,9 +198,11 @@ export class Game {
       const wave = this.waves[i];
       wave.update();
       
-      // Check collision with player - must be same row AND within wave's column coverage
+      // Check collision with player - only if player is not jumping (immune)
       const playerPos = this.player.getPosition();
-      if (wave.getCurrentRow() === playerPos.row && wave.isColumnCovered(playerPos.col)) {
+      if (!this.player.isImmuneToWaves() && 
+          wave.getCurrentRow() === playerPos.row && 
+          wave.isColumnCovered(playerPos.col)) {
         console.log(`Collision detected! Player at (${playerPos.row}, ${playerPos.col}), Wave covers columns ${wave.getWaveCoverage().startCol}-${wave.getWaveCoverage().endCol}`);
         this.handleGameOver();
         return;
