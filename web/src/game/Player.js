@@ -108,4 +108,28 @@ export class Player {
     }
     return false;
   }
+
+  // Move to end of current/next word
+  moveToWordEnd(letterGrid) {
+    const endPos = letterGrid.findWordEnd(this.gridRow, this.gridCol);
+    if (endPos) {
+      this.gridRow = endPos.row;
+      this.gridCol = endPos.col;
+      this.updatePosition();
+      return true;
+    }
+    return false;
+  }
+
+  // Find and move to character in current row
+  findCharacter(letterGrid, targetChar) {
+    const charPos = letterGrid.findCharacterInRow(this.gridRow, this.gridCol, targetChar);
+    if (charPos) {
+      this.gridRow = charPos.row;
+      this.gridCol = charPos.col;
+      this.updatePosition();
+      return true;
+    }
+    return false;
+  }
 }

@@ -81,6 +81,13 @@ export class Game {
   }
   
   handleVimCommand(command) {
+    // Handle find character commands (f + letter)
+    if (command.startsWith('f') && command.length === 2) {
+      const targetChar = command[1];
+      this.player.findCharacter(this.letterGrid, targetChar);
+      return;
+    }
+    
     switch(command) {
       case 'h':
         this.player.moveLeft();
@@ -99,6 +106,9 @@ export class Game {
         break;
       case 'b':
         this.player.moveToPreviousWord(this.letterGrid);
+        break;
+      case 'e':
+        this.player.moveToWordEnd(this.letterGrid);
         break;
     }
   }

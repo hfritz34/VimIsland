@@ -2,6 +2,8 @@ export class InputManager {
   constructor() {
     this.keys = {};
     this.commandCallback = null;
+    this.waitingForChar = false;  // For 'f' command
+    this.lastFindChar = null;      // Store last searched character
     this.setupEventListeners();
   }
 
@@ -17,10 +19,29 @@ export class InputManager {
   }
 
   handleVimCommand(key) {
-    const vimCommands = ['h', 'j', 'k', 'l', 'w', 'b', 'e'];
+    // If we're waiting for a character after 'f'
+    if (this.waitingForChar) {
+      this.waitingForChar = false;
+      // Only accept letters for find
+      if (key.length === 1 && /[a-zA-Z]/.test(key)) {
+        this.lastFindChar = key.toUpperCase();
+        this.commandCallback('f' + this.lastFindChar);
+      }
+      return;
+    }
     
-    if (vimCommands.includes(key) && this.commandCallback) {
-      this.commandCallback(key);
+    const vimCommands = ['h', 'j', 'k', 'l', 'w', 'b', 'e', 'f', ';'];
+    
+    if (vimCommands.includes(key)) {
+      if (key === 'f') {
+        // Wait for next character
+        this.waitingForChar = true;
+      } else if (key === ';' && this.lastFindChar) {
+        // Repeat last find
+        this.commandCallback('f' + this.lastFindChar);
+      } else if (this.commandCallback) {
+        this.commandCallback(key);
+      }
     }
   }
   

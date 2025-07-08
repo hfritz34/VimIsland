@@ -190,4 +190,54 @@ export class LetterGrid {
     // No previous word found, go to beginning
     return { row: 0, col: 0 };
   }
+
+  // Find the end of current/next word
+  findWordEnd(currentRow, currentCol) {
+    let col = currentCol;
+    let row = currentRow;
+    
+    // If we're on a space, find the next word first
+    if (!this.letters[row][col]) {
+      // Skip spaces to find next word
+      while (row < this.rows) {
+        while (col < this.cols && !this.letters[row][col]) {
+          col++;
+        }
+        
+        // If we found a letter, this is the word we'll find the end of
+        if (col < this.cols && this.letters[row][col]) {
+          break;
+        }
+        
+        // Move to next row
+        row++;
+        col = 0;
+      }
+    }
+    
+    // Now find the end of the current word
+    if (row < this.rows && col < this.cols && this.letters[row][col]) {
+      // Move to end of word
+      while (col < this.cols - 1 && this.letters[row][col + 1]) {
+        col++;
+      }
+      return { row, col };
+    }
+    
+    // No word found
+    return null;
+  }
+
+  // Find next occurrence of character in current row
+  findCharacterInRow(currentRow, currentCol, targetChar) {
+    // Search from next position to end of row
+    for (let col = currentCol + 1; col < this.cols; col++) {
+      if (this.letters[currentRow][col] && 
+          this.letters[currentRow][col].letter === targetChar) {
+        return { row: currentRow, col };
+      }
+    }
+    // Character not found in row
+    return null;
+  }
 }
