@@ -17,7 +17,7 @@ export class InputManager {
   }
 
   handleVimCommand(key) {
-    const vimCommands = ['h', 'j', 'k', 'l', 'w'];
+    const vimCommands = ['h', 'j', 'k', 'l', 'w', 'b', 'e'];
     
     if (vimCommands.includes(key) && this.commandCallback) {
       this.commandCallback(key);

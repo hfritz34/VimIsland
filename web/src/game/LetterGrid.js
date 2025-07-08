@@ -137,4 +137,57 @@ export class LetterGrid {
     // No more words found
     return null;
   }
+
+  // Find the previous word start position from current position
+  findPreviousWordStart(currentRow, currentCol) {
+    let col = currentCol;
+    let row = currentRow;
+    
+    // If we're at the start of a word, move back to find previous word
+    if (col > 0 && this.letters[row][col] && !this.letters[row][col - 1]) {
+      col--;
+    }
+    
+    // Skip current word if we're in the middle of one
+    if (col >= 0 && this.letters[row][col]) {
+      // Move to start of current word
+      while (col > 0 && this.letters[row][col - 1]) {
+        col--;
+      }
+      // Move one more step back to get to space before this word
+      if (col > 0) {
+        col--;
+      } else if (row > 0) {
+        // Need to go to previous row
+        row--;
+        col = this.cols - 1;
+      } else {
+        // Already at the very beginning
+        return { row: 0, col: 0 };
+      }
+    }
+    
+    // Skip spaces to find previous word
+    while (row >= 0) {
+      while (col >= 0 && !this.letters[row][col]) {
+        col--;
+      }
+      
+      // If we found a letter, find the start of this word
+      if (col >= 0 && this.letters[row][col]) {
+        // Move to start of word
+        while (col > 0 && this.letters[row][col - 1]) {
+          col--;
+        }
+        return { row, col };
+      }
+      
+      // Move to previous row
+      row--;
+      col = this.cols - 1;
+    }
+    
+    // No previous word found, go to beginning
+    return { row: 0, col: 0 };
+  }
 }

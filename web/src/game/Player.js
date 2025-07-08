@@ -96,4 +96,16 @@ export class Player {
     }
     return false;
   }
+
+  // Move to previous word start position
+  moveToPreviousWord(letterGrid) {
+    const prevPos = letterGrid.findPreviousWordStart(this.gridRow, this.gridCol);
+    if (prevPos) {
+      this.gridRow = prevPos.row;
+      this.gridCol = prevPos.col;
+      this.updatePosition();
+      return true;
+    }
+    return false;
+  }
 }
