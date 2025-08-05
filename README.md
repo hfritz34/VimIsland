@@ -56,5 +56,4 @@ npm run build
 - **Deployment**: TBD
 
 ## Contributing
-
-TBD 
+Henry Fritz 
