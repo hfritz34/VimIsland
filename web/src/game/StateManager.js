@@ -26,3 +26,4 @@ export class StateManager {
     return this.gameData;
   }
 }
+1
