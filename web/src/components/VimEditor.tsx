@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import { initVimMode } from '../utils/vimMode'
 
